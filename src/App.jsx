@@ -8,11 +8,11 @@ class App extends Component {
     super(props);
     // this is the *only* time you should assign directly to state:
     this.state = {
-	  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+	  currentUser: {name: "Karthik"}, // optional. if currentUser is not defined, it means the user is Anonymous
 	  messages: [
 	    {
 	      username: "Bob",
-	      content: "Has anyone seen my marbles?",
+	      content: "Has anyone seen my marbles?"
 	    },
 	    {
 	      username: "Anonymous",
@@ -26,7 +26,7 @@ class App extends Component {
     return (
 	  <div>
 	    <NavBar />
-        <MessageList />
+        <MessageList messages={this.state.messages} />
   		<ChatBar name={this.state.currentUser.name} />
   	  </div>
     );
