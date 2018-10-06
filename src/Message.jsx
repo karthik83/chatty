@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-class MessageList extends Component {
+class Message extends Component {
   render() {
     return (
       <div className = "message">
@@ -9,4 +9,4 @@ class MessageList extends Component {
     );
   }
 }
-export default MessageList;
+export default Message;
