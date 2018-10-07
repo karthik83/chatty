@@ -8,8 +8,9 @@ class App extends Component {
     super(props);
     // this is the *only* time you should assign directly to state:
     this.state = {
-	  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-	  messages: []
+	  currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
+	  messages: [],
+	  onlineUsers: {count: "0"}
 	};
 	this.socket = null;
   }
@@ -23,12 +24,16 @@ class App extends Component {
 		this.socket.onmessage = event => {
 			const newMessage = JSON.parse(event.data);
 			const messages = this.state.messages.concat(newMessage);
+			console.log(messages);
 			switch(newMessage.type) {
 			  case "incomingMessage":
 			    this.setState({messages: messages});
 			    break;
 			  case "incomingNotification":
 				this.setState({messages: messages});
+			    break;
+			  case "clientCount":
+			    this.setState({onlineUsers:{count:newMessage.count}});
 			    break;
 			  default:
 			    // show an error in the console if the message type is unknown
@@ -64,13 +69,14 @@ class App extends Component {
       content: `${oldUsername} has changed their name to ${newUsername}`,
       type: "postNotification"
     };
-    this.socket.send(JSON.stringify(newNotification));
+    if (oldUsername.trim() !== newUsername.trim()) {
+      this.socket.send(JSON.stringify(newNotification));	
+    }
   };
-
   render() {
     return (
 	  <div>
-	    <NavBar />
+	    <NavBar count={this.state.onlineUsers.count} />
         <MessageList messages={this.state.messages} />
   		<ChatBar name={this.state.currentUser.name} 
   			addMessage={this.addMessage} 
