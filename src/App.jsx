@@ -6,39 +6,35 @@ import ChatBar from './ChatBar.jsx';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.addMessage = this.addMessage.bind(this);
     // this is the *only* time you should assign directly to state:
     this.state = {
 	  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-	  messages: [
-	    {
-	      id: "1",
-	      username: "Bob",
-	      content: "Has anyone seen my marbles?"
-	    },
-	    {
-	      id: "2",
-	      username: "Anonymous",
-	      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-	    },
-	    {
-	      id: "3",
-	      username: "Sam",
-	      content: "I found it, Buddy!"
-	    }
-	  ]
+	  messages: []
 	};
+	this.socket = null;
   }
 
 	componentDidMount() {
-	  setTimeout(() => {
-	    // Add a new message to the list of messages in the data store
-	    const newMessage = {username: "Michelle", content: "No no no no, that is a different one!", id: "4"};
-	    const messages = this.state.messages.concat(newMessage);
-	    // Update the state of the app component.
-	    // Calling setState will trigger a call to render() in App and all child components.
-	    this.setState({messages: messages});
-	  }, 3000);
-	};
+		const url = 'ws://localhost:3001';
+		this.socket = new WebSocket(url);
+		console.log(this.socket);
+		this.socket.onopen = function() {
+			console.log('Open web socket...');
+		};
+		this.socket.onmessage = event => {
+			const newMessage = JSON.parse(event.data);
+			const messages = this.state.messages.concat(newMessage);
+			console.log(messages);
+			this.setState({messages: messages});
+		}
+		this.socket.onclose = function(e) {
+			console.log('closed');
+		}
+		this.socket.onerror = function(e) {
+			console.log('error');
+		}
+  	};
   
   // Update current user to the state
   updateUser = username => {
@@ -48,12 +44,10 @@ class App extends Component {
   // Add new message to the state
   addMessage = (content, username) => {
   	const newMessage = {
-      id: this.state.messages.length + 1,
       username: username,
       content: content
     };
-    const messages = this.state.messages.concat(newMessage);
-    this.setState({messages: messages});
+    this.socket.send(JSON.stringify(newMessage));
   };
 
   render() {
