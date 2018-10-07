@@ -38,12 +38,12 @@ body {
   flex: 2;
 }
 
-.message {
+.message-incomingMessage {
   display: flex;
   padding: 5px;
 }
 
-.message.system {
+.message-incomingNotification {
   font-style: italic;
   padding: 5px 20px;
 }

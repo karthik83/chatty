@@ -6,12 +6,10 @@ class MessageList extends Component {
 	  <main className='messages'>
 	    {
 	      this.props.messages.map((message) => {
-	        return (<Message content={message.content} username={message.username} key={message.id} />);
+	        return (<Message type={message.type} content={message.content} 
+	        	username={message.username} key={message.id} />);
 	      })
 	    }
-	    <div className='message system'>
-	      Anonymous1 changed their name to nomnom.
-	    </div>
 	  </main>
     );
   }
